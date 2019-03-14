@@ -4,14 +4,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,38 +24,384 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.Vector;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
 import modelo.Equipo;
 import modelo.Estudiante;
+import modelo.Jugador;
 import modelo.Partido;
 import modelo.Persona;
 
 public class Ejercicios {
-	public void creaFicheroObjetoEquipos (String rutaEquipos)
-	{
+	// 12 marzo 2019
+	//inicio practicas orientadas a sesion de evaluación.
+		// modificar el metodo crearMapaEquipos para que devuelva un ArrayList<Equipo>
+		// el fichero a leer será equipos.txt
+	
+	public ArrayList<Equipo> crearListaEquipo(String rutaFicheroEquipos){
+		ArrayList<Equipo> listadoEquipos= new ArrayList<Equipo>();
+		try {
+			FileReader fr = new FileReader(rutaFicheroEquipos);
+			BufferedReader br = new BufferedReader(fr);		
+			String fichero;
+			while((fichero = br.readLine()) !=null) {
+				String[] unaLinea = fichero.split("#");
+				Integer id = Integer.parseInt(unaLinea[0]);
+				String nombreCorto = unaLinea[1];
+				String nombre = unaLinea[2];			
+				Integer pj = Integer.parseInt(unaLinea[3]);			
+				Integer puntos = Integer.parseInt(unaLinea[4]);			
+				Integer pg = Integer.parseInt(unaLinea[5]);			
+				Integer pe = Integer.parseInt(unaLinea[6]);			
+				Integer pp = Integer.parseInt(unaLinea[7]);			
+				Integer gf = Integer.parseInt(unaLinea[8]);			
+				Integer gc = Integer.parseInt(unaLinea[9]);			
+				/*
+				 * otra forma de añadir los valores al AL con set
+				 * unEquipo.set(id);
+				 * unEquipo.set(nombreCorto);
+				 * unEquipo.set(nombre);
+				 * unEquipo.set(pj);
+				 * unEquipo.set(puntos);
+				 * unEquipo.set(pg);
+				 * unEquipo.set(pe);
+				 * unEquipo.set(pp);
+				 * unEquipo.set(gf);
+				 * unEquipo.set(gc);
+				 * */
+				Equipo unEquipo = new Equipo(id, nombreCorto, nombre, pj, puntos, pg, pe, pp, gf, gc);
+				listadoEquipos.add(unEquipo);
+			}
+			br.close();
+			fr.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("Error FileNotFound");
+		} catch (IOException e) {
+			System.out.println("Error I/O");
+		}		
+		return listadoEquipos;
+	}
+
+	// algoritmo busqueda dicotomica o binaria // algoritmo de prueba de limites
+	// buscar en un array de numeros (int[]pajar, int aguja), a la hora de introducir el array habrá que crearlo de forma ascendente, 2,4,6,8, etc...
+	// devolvera la posicion entre 0 y n-1 de hallarla, si no estuviera devolveria -1 (-1== "el numero no se encuentra")
+	// implementacion: hacer lista de las variables a usar, locales al metodo
+	// variables-> izq, drch, medio (el que se busca esta entre algun rango? no, seguimos, si cortamos y rebuscamos en la seccion restante)
+	// medio = (drch-izq/2) + izq
+	// todo esto estara dentro de un bucle, el cual finalizara cuando...
+	// primera salida-> if pajar[medio]==aguja) ->lo ha encontrado por lo que return medio
+	// segunda salida-> if aguja<pajar[medio]) -> drch = medio; el medio pasa a ser derecho acortandose la busqueda
+	// else izq = med;
+	
+	public int busquedaBinaria(int[] pajar, int aguja) {
+		int numeroNoEncontrado = -1;
+		int drch = pajar.length -1; //extension maxima del array hacia la derecha
+		int izq = 0; // extension minima del arraylist
+		int med = 0; // punto medio que se convertirá en drch o izq según sea el num escogido (este más cerca de la drch o de la izq)
+		while(izq <= drch){
+			med = ((drch-izq) / 2) + izq; // dara el punto medio (med)
+			if(pajar[med] == aguja) {// si el numero en el punto medio es igual al num escogido hacer...
+				System.out.println("Numero " + aguja + " encontrado en POSICION " + med);
+				return med;
+			}else if(aguja < pajar[med]) {				
+				drch = med - 1;
+			}else {
+				izq = med + 1;
+			}
+		}
+		System.out.println(" Numero no encontrado " + aguja);
+		return numeroNoEncontrado;
+	}
+	
+	// equipo es el nombre corto XYZ,RMA
+	// recorrer la LISTA de equipos, preguntando si el nombre corto coincide con alguno
+	// si no encontramos ninguno, devolverá null...
+	public Equipo buscarEquipo(String equipo, ArrayList<Equipo>equipos) {	
+		for(int i = 0; i < equipos.size(); i++) {
+		String nombreCorto = equipos.get(i).getNombreCorto();
+			if(nombreCorto.equals(equipo)) {
+				System.out.println("El Equipo escogido es: " + equipo);
+			}
+		}
+		return null;
+	}
+	// crear la lista.
+	// crearListaJugadores a partir de un fichero
+	// recorrer secuencialmente el fichero
+	// crear objeto Jugador por cada registro del fichero
+	// añadir jugador a la lista
+	// al terminar el fichero, devolver la lista
+	// si hay cuaquier excepcion, capturarla y devolver null
+	public ArrayList<Jugador> creaListaJugadores(String RutaFicheroJugadores){
+		ArrayList<Jugador> listaJugadores= new ArrayList<Jugador>();
+		try {
+			FileReader fr = new FileReader(RutaFicheroJugadores);
+			BufferedReader br = new BufferedReader(fr);		
+			String fichero;
+				while((fichero = br.readLine()) !=null) {
+					String[] unaLinea = fichero.split("#");
+					Integer id = Integer.parseInt(unaLinea[0]);
+					String nombre = unaLinea[1];				
+					Integer dorsal = Integer.parseInt(unaLinea[2]);
+					Integer idEq = Integer.parseInt(unaLinea[3]);
+					Jugador unJugador = new Jugador(id, null, nombre, 0, null, ' ', dorsal, idEq);
+					listaJugadores.add(unJugador);
+				}
+		} catch (FileNotFoundException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+		return listaJugadores;
+	}
+	
+	// crearMapaJugadores a partir de un fichero
+	// K-V, K es el nif
+	// sehir los mismos pasos que con el anterior pero siendo un hashmap
+	public HashMap<String, Jugador> creaMapaJugadores(String RutaFicheroJugadores){
+		HashMap<String, Jugador> mapaJugadores= new HashMap<String, Jugador>();
+		try {
+			FileReader fr = new FileReader(RutaFicheroJugadores);
+			BufferedReader br = new BufferedReader(fr);		
+			String fichero;
+				while((fichero = br.readLine()) !=null) {
+					String[] unaLinea = fichero.split("#");
+					Integer id = Integer.parseInt(unaLinea[0]);
+					String nif = unaLinea[1];
+					String nombre = unaLinea[2];
+					Integer dorsal = Integer.parseInt(unaLinea[6]);
+					Integer idEq = Integer.parseInt(unaLinea[7]);
+					Jugador unJugador = new Jugador(id, nif, nombre, 0, null, ' ', dorsal, idEq);
+					mapaJugadores.put(nif, unJugador);				
+				}
+		} catch (FileNotFoundException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}		
+		return mapaJugadores;
+	}
+	
+	// ordenarListaPorNombre
+	// 
+	public void ordenarListaJugadores(ArrayList<Jugador> listaJugadores) {		
+		Collections.sort(listaJugadores, new Comparator<Jugador>() {
+			@Override
+			public int compare(Jugador jugador1, Jugador jugador2) {
+				return jugador1.getNombre().compareTo(jugador2.getNombre());
+				
+			}	
+		});
+			for(Jugador jugador: listaJugadores){
+			    System.out.println(jugador.getNombre());
+			}	
+	}
+	
+	public void ordenarMapaJugadores(HashMap<String, Jugador> mapaJugadores) {
+		Set<Entry<String, Jugador>> set = mapaJugadores.entrySet();
+		List<Entry<String, Jugador>> listado = new ArrayList<Entry<String, Jugador>>(set);		
+		Collections.sort(listado, new Comparator<Map.Entry<String, Jugador>>() {
+			@Override
+			public int compare(Entry<String, Jugador> Jugador1, Entry<String, Jugador> Jugador2) {
+				return (Jugador1.getValue().getNombre()).compareTo(Jugador2.getValue().getNombre());
+			}			
+		});
+		for (Map.Entry<String, Jugador> clavesMapa : listado) {
+			System.out.println(clavesMapa.getKey() + " ==== " + clavesMapa.getValue());
+		}	
+	}
+	/**********************************************************/
+	// inicio practicas escribir ficheros
+
+	// ejercicio
+	// dado un equipo mostrar sus jugadores.
+
+	// algun ejercicio relacionado con el acceso y escritura de objetos
+
+	// 21 febrero 2019
+	public void crearJugadoresPorEquipo() {
+		// el string será la clave nombre largo de equipos
+		HashMap<String, ArrayList<Jugador>> mapaListadoJugadoresEquipos = new HashMap<String, ArrayList<Jugador>>();
+		try {
+			FileOutputStream salida = new FileOutputStream("ficheros/jugadoresEquipos.obj");
+			ObjectOutputStream objetos = new ObjectOutputStream(salida);
+			HashMap<String, Equipo> mapaEquipos = crearMapaEquipos("ficheros/equipos.txt");
+			HashMap<Integer, Jugador> mapaJugadores = crearMapaJugadores("ficheros/jugadores.txt");
+			Set<String> clavesEquipos = mapaEquipos.keySet();
+			for (String unaClaveEquipo : clavesEquipos) {
+				Equipo valoresEquipos = mapaEquipos.get(unaClaveEquipo);
+				String nombreLargoEquipo = valoresEquipos.getNombre();
+				mapaListadoJugadoresEquipos.put(nombreLargoEquipo, new ArrayList<Jugador>());
+			}
+
+			Collection<Jugador> valoresMapaJugadores = mapaJugadores.values();
+			for (Jugador unJugador : valoresMapaJugadores) {
+				int idEquipoJugador = unJugador.getIdEquipo();
+				String nombreLargoUnEquipo = null;
+				Collection<Equipo> valoresMapaEquipos = mapaEquipos.values();
+				for (Equipo unEquipo : valoresMapaEquipos) {
+					int idEquipo = unEquipo.getId();
+					if (idEquipo == idEquipoJugador) {
+						nombreLargoUnEquipo = unEquipo.getNombre();
+						break;
+					}
+				}
+				mapaListadoJugadoresEquipos.get(nombreLargoUnEquipo).add(unJugador);
+			}
+			objetos.writeObject(mapaListadoJugadoresEquipos);
+			objetos.close();
+			salida.close();
+
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+
+	}
+	
+	public void mostrarListadoJugadoresEquipo(String rutaFichero) {
+		HashMap<String, ArrayList<Jugador>> listadoJugadoresEquipos= new HashMap<String, ArrayList<Jugador>>();
+		try {
+			FileInputStream fis = new FileInputStream(rutaFichero);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			listadoJugadoresEquipos = (HashMap<String, ArrayList<Jugador>>) ois.readObject();
+			
+			Set<String> clavesListadoJugadoresEquipos = listadoJugadoresEquipos.keySet();
+			for( String nombreLargoEquipos : clavesListadoJugadoresEquipos) {
+				System.out.println(nombreLargoEquipos);
+				ArrayList<Jugador> jugadoresUnEquipo = listadoJugadoresEquipos.get(nombreLargoEquipos);
+				for(int i=0; i < jugadoresUnEquipo.size(); i++) {
+					System.out.println(jugadoresUnEquipo.get(i));
+				}
+			}
+			System.out.println();
+			ois.close();
+			fis.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("estoy que no encuentro el fichero");
+		} catch (IOException e) {
+			System.out.println("IO");
+		} catch (ClassNotFoundException e) {
+			System.out.println("cero clases");
+		}
+		
+	
+	}
+
+	public HashMap<Integer, Jugador> crearMapaJugadores(String rutaFichero) {
+		try {
+			HashMap<Integer, Jugador> mapaJugadores = new HashMap<Integer, Jugador>();
+			BufferedReader fichero;
+			fichero = new BufferedReader(new FileReader(rutaFichero));
+			String registro = " ";
+			int idEquipoExistente = 0;
+
+			while ((registro = fichero.readLine()) != null) {
+				String[] campos = registro.split("#");
+				ArrayList<Jugador> listadoJugadores;
+				int idJugador = Integer.parseInt(campos[0]);
+				String nif = campos[1];
+				String nombre = campos[2];
+				int longPasos = Integer.parseInt(campos[3]);
+				String fechaNac = campos[4];
+				char sexo = campos[5].charAt(0);
+				int dorsal = Integer.parseInt(campos[6]);
+				int idEquipo = Integer.parseInt(campos[7]);
+
+				Jugador unJugador = new Jugador(idJugador, nif, nombre, longPasos, fechaNac, sexo, dorsal, idEquipo);
+				mapaJugadores.put(idJugador, unJugador);
+				System.out.println();
+
+			}
+			fichero.close();
+			System.out.println("Fin de la lectura del fichero");
+			return mapaJugadores;
+		} catch (FileNotFoundException excepcion) {
+			System.out.println("fichero no encontrado");
+		} catch (IOException e) {
+			System.out.println("IO Excepcion");
+		}
+		return null;
+	}
+
+	// 20 febrero 2019
+	// -----------------------------------------
+
+	// grabar cada registro
+	// 1ero buscar en java clases que diga object (io, string, output¿?)
+	// Serializable -> interfaz que sirve para ?¿
+	// a partir del fichero Equipos.txt crear un fichero binario.
+	// en la clase equipo habrá que implementar la clase serializable
+	// leer el objeto equipo y coger un tutorial para... ¿?
+	// el fichero de salida sera un objeto de clase equipo
+	// cada vez que lea el fichero txt crea un fichero equipo y se graba en el
+	// fichero salida.
+	// recorre equipos.txt creando objetos equipo y grabandolos en objetos
+	// cuando se lea siempre devuelve un object, se deberá castear.
+	// read object -> devuelve un object. se pondra un casting de equipo (Equipo)
+	// asi se podra trabajar con las propiedades del objeto.
+	public void creaFicheroObjetoEquipos() {
 		try {
 			FileOutputStream salida = new FileOutputStream("ficheros/equipos.obj");
 			ObjectOutputStream objetos = new ObjectOutputStream(salida);
-			// recorre equipos.txt, creando objetos equipo
-			// y grabandolos en objetos
-			
+			// ObjectOutputStream objetos = new ObjectOutputStream(new
+			// FileOutputStream("ficheros/equipos.obj"));
+			// recorre equipos.txt, creando objetos equipo y grabandolos en objetos
+			HashMap<String, Equipo> mapaEquipos = crearMapaEquipos("ficheros/equipos.txt");
+
+			Set<String> clavesMapaEquipos = mapaEquipos.keySet(); // por claves
+			for (String claveEquipo : clavesMapaEquipos) {
+				Equipo objetoEquipo = mapaEquipos.get(claveEquipo);
+				objetos.writeObject(objetoEquipo);
+				// objetos.writeObject(" " + objetoEquipo); // graba cada objeto como string
+
+			}
+			/*
+			 * for(Equipo unEquipo : mapaEquipos.values()) { //por valores
+			 * objetos.writeObject(unEquipo); }
+			 */
+			objetos.close();
+			salida.close();
 		} catch (FileNotFoundException e) {
-		
-			e.printStackTrace();
+			System.out.println("Error FileNotFound " + e.getMessage());
 		} catch (IOException e) {
-			
-			e.printStackTrace();
+			System.out.println("Error I/O " + e.getMessage());
 		}
-		
+	}
+
+	public void mostrarFicheroObjetoEquipo(String rutaEquipos) {
+		FileInputStream fis = null;
+		ObjectInputStream lecturaFicheroObjeto = null;
+		try {
+			fis = new FileInputStream("ficheros/equipos.obj" /* rutaEquipos */);
+			lecturaFicheroObjeto = new ObjectInputStream(fis);
+			int i = 0;
+			// fis es el acceso al fichero, el metodo available pregunta cuantos bytes
+			// quedan por leer
+			// de datos en el fichero, cuando llegue a 0 byte daria false en la comparacion.
+			while (fis.available() > 0) {
+				Equipo unEquipo = (Equipo) lecturaFicheroObjeto.readObject();
+				System.out.println(i + " Id:" + unEquipo.getId() + " -- " + unEquipo.getNombreCorto() + " -- "
+						+ unEquipo.getNombre());
+				i++;
+			}
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Error FileNotFound " + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("Error I/O " + e.getMessage());
+		} catch (ClassNotFoundException e) {
+			System.out.println("Error ClassNotFound " + e.getMessage());
+		} finally {
+			try {
+				lecturaFicheroObjeto.close();
+			} catch (IOException e) {
+				System.out.println("Error I/O finally" + e.getMessage());
+			}
+		}
 	}
 
 	public void grabarTiradasDado(int cuantas) {
@@ -62,13 +411,13 @@ public class Ejercicios {
 			BufferedWriter fichero;
 			fichero = new BufferedWriter(new FileWriter("ficheros/tiradasDado.txt"));
 			Random rnd = new Random();
-			int acum=0;
+			int acum = 0;
 			for (int i = 0; i < cuantas; i++) {
 				int numero = 1 + rnd.nextInt(6);
-				acum+= numero;
-                fichero.write (numero+"\n");
+				acum += numero;
+				fichero.write(numero + "\n");
 			}
-			System.out.printf("media = %.2f \n" , (float)acum/cuantas);
+			System.out.printf("media = %.2f \n", (float) acum / cuantas);
 			System.out.println("Proceso terminado...");
 			fichero.close();
 		} catch (IOException ex) {
@@ -221,7 +570,7 @@ public class Ejercicios {
 
 	public ArrayList<Equipo> equiposListaOrdenadaNombre(String rutaFichero) {
 		ArrayList<Equipo> lista;
-		lista = crearListaEquipos("ficheros/equipos.txt");
+		lista = crearListaEquipos(rutaFichero);
 
 		/*
 		 * lista.sort(new Comparator<Equipo>() {
@@ -1173,18 +1522,35 @@ public class Ejercicios {
 
 	public static void main(String[] args) {
 		Ejercicios ejercicios = new Ejercicios();
-
-		
-		
-		ejercicios.grabarTiradasDado(10);
+		/***************INICIO PRACTICAS EVALUACION************************/
+		// ArrayList<Equipo> listadoEquipos = ejercicios.crearListaEquipo("ficheros/equipos.txt");
+		// System.out.println(listadoEquipos);
+		//ArrayList<Equipo> eqOrdenados = ejercicios.equiposListaOrdenadaNombre("ficheros/equipos.txt");
+		//ejercicios.buscarEquipo("RMA", eqOrdenados);
+		//int[] busquedaBinaria = {1,2,3,4,5,6,7,8,9,10};
+		//int ejercicioBusquedaBi = ejercicios.busquedaBinaria(busquedaBinaria, 5);
+		// System.out.println(ejercicioBusquedaBi);
+		ArrayList<Jugador> listaJugadores = ejercicios.creaListaJugadores("ficheros/jugadoresJordan.txt");
+		HashMap<String, Jugador> mapaJugadores = ejercicios.creaMapaJugadores("ficheros/jugadores.txt");
+		// System.out.println(listaJugadores);
+		// System.out.println(mapaJugadores);
+		// ejercicios.ordenarListaJugadores(listaJugadores);
+		// ejercicios.ordenarMapaJugadores(mapaJugadores); // revisar
+		/***************************************/
+		// ejercicios.crearJugadoresPorEquipo();
+		// ejercicios.mostrarListadoJugadoresEquipo("ficheros/jugadoresEquipos.obj");
+		// HashMap<Integer, Jugador> mapaJugadores = ejercicios.crearMapaJugadores("ficheros/jugadores.txt");
+		// System.out.println(mapaJugadores);
+		// ejercicios.creaFicheroObjetoEquipos();
+		// ejercicios.mostrarFicheroObjetoEquipo("ficheros/equipos.obj");
+		// ejercicios.grabarTiradasDado(10);
 		// HashMap<String, ArrayList<Integer>> resultados =
 		// ejercicios.resultadosEquipos("ficheros/partidos.txt");
 		// HashMap<String, Integer> puntosEquipos =
 		// ejercicios.generaPuntosEquipos(resultados);
 		// ejercicios.muestraClasificacion();
-		//ejercicios.entradaTecladoAFichero("ficheros/teclado.txt");
-		
-//ArrayList<Equipo> eqOrdenados = ejercicios.equiposListaOrdenadaNombre("ficheros/equipos.txt");
+		// ejercicios.entradaTecladoAFichero("ficheros/teclado.txt");
+
 		// ejercicios.ordenarMapaPuntosEquipos(puntosEquipos);
 
 		// ejercicios.pruebaSWING();
@@ -1202,6 +1568,7 @@ public class Ejercicios {
 		// ejercicios.crearListaEquipos("ficheros/equipos.txt");
 		// HashMap<String, Equipo> equipos =
 		// ejercicios.crearMapaEquipos("ficheros/equipos.txt");
+		// System.out.println(equipos);
 		// ejercicios.mostrarNumeroPartidosJugadosTry("ficheros/partidos.txt");
 		// HashMap<String, ArrayList<Integer>> x =
 		// ejercicios.resultadosEquipos("ficheros/partidos.txt");

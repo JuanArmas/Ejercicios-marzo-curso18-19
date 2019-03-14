@@ -6,17 +6,16 @@ public class Jugador extends Persona {
 	private int idEquipo;
 
 	public Jugador() {
-		// TODO Auto-generated constructor stub
-	}
+		}
 
-	public Jugador(String nif, String nombre, int longitudPaso, String fecha_nac, char sexo, int id, int dorsal,
+	public Jugador(int id, String nif, String nombre, int longitudPaso, String fecha_nac, char sexo,  int dorsal,
 			int idEq) {
 		super(nif, nombre, longitudPaso, fecha_nac, sexo);
 		this.id = id;
 		this.dorsal = dorsal;
 		this.idEquipo = idEq;
 	}
-
+	
 	public int getId() {
 		return id;
 	}

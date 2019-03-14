@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Equipo implements Serializable,Comparable<Equipo> {
 	
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String nombreCorto;
 	private String nombre;
@@ -15,6 +16,10 @@ public class Equipo implements Serializable,Comparable<Equipo> {
 	private int gf;
 	private int gc;
 	
+	public Equipo() {
+		super();
+	}
+	
 	public Equipo(int id, String nombreCorto, String nombre) {
 		super();
 		this.id = id;
@@ -22,11 +27,20 @@ public class Equipo implements Serializable,Comparable<Equipo> {
 		this.nombre = nombre;
 	}
 
-
-	public Equipo() {
+	public Equipo(int id, String nombreCorto, String nombre, int pj, int puntos, int pg, int pe, int pp, int gf,
+			int gc) {
 		super();
+		this.id = id;
+		this.nombreCorto = nombreCorto;
+		this.nombre = nombre;
+		this.pj = pj;
+		this.puntos = puntos;
+		this.pg = pg;
+		this.pe = pe;
+		this.pp = pp;
+		this.gf = gf;
+		this.gc = gc;
 	}
-
 
 	public int getPj() {
 		return pj;
@@ -128,11 +142,15 @@ public class Equipo implements Serializable,Comparable<Equipo> {
 	}
 
 
-	@Override
-	public String toString() {
+
+	public String toString2() {
 		return  nombre ;
 	}
 
+	@Override
+	public String toString() {
+		return "Equipo [id=" + id + ", nombreCorto=" + nombreCorto + ", nombre=" + nombre + "]";
+	}
 
 	@Override
 	public int compareTo(Equipo eq) {
