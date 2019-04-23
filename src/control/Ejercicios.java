@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,6 +38,34 @@ import modelo.Partido;
 import modelo.Persona;
 
 public class Ejercicios {
+	// 21 marzo 2019	
+	// practica enum
+	// mirar clase nueva de este mismo paquete
+	// reflexion -> uso de reflexion ---> se usa en los frameworks, (uno de java spring, orm, etc.)
+	 // le das un objeto o u objeto de clase y sabra todas las caracteristicas del objeto. 
+	
+	
+	/****************************************************/
+	
+	//20 marzo 2019
+	// Ejemplo de recorrido recursivo de un árbol de directorios
+	// esto es perfecto para crear un gestor de ficheros
+	// sirve para recorrer y consultar las carpetas y su contenido...¿?
+	// revisar, verificar y aumentar la info
+	
+	public static void traverse(File parentNode, String leftIndent) {
+	    if (parentNode.isDirectory()) {
+	        System.out.println(leftIndent + parentNode.getName());
+	        leftIndent += "     ";
+	        File childNodes[] = parentNode.listFiles();
+	        for (File childNode : childNodes) {
+	            traverse(childNode, leftIndent);
+	        }
+	    } else {
+	        System.out.println(leftIndent +"|   --> "+ parentNode.getName());
+	    }
+	}
+	
 	// 12 marzo 2019
 	//inicio practicas orientadas a sesion de evaluación.
 		// modificar el metodo crearMapaEquipos para que devuelva un ArrayList<Equipo>
@@ -568,10 +597,16 @@ public class Ejercicios {
 	// a partir de la lista obtenida en el método
 	// crearListaEquipos
 
+	// 5 de febrero 2019
+	
+	// Obtener un ArrayList ORDENADA por nombre LAARgo del equipo
+	// a partir de la lista obtenida en el método
+	// crearListaEquipos
+	
 	public ArrayList<Equipo> equiposListaOrdenadaNombre(String rutaFichero) {
 		ArrayList<Equipo> lista;
 		lista = crearListaEquipos(rutaFichero);
-
+	
 		/*
 		 * lista.sort(new Comparator<Equipo>() {
 		 * 
@@ -587,9 +622,9 @@ public class Ejercicios {
 		 * return -1; else return 0; } });
 		 */
 		lista.sort(null);
-
+	
 		return lista;
-
+	
 	}
 
 	public void ordenarMapaPuntosEquipos(HashMap<String, Integer> puntosEquipos) {
@@ -1075,14 +1110,11 @@ public class Ejercicios {
 	// ambas
 
 	public int[] mezclaListasOrdenadas(int[] l1, int[] l2) {
-
 		int[] resultado = new int[l1.length + l2.length];
 		int i = 0;
 		int j = 0;
 		int k = 0;
-
 		while (k < l1.length + l2.length) {
-			// while (i < l1.length || j < l2.length) {
 			try {
 				if (l1[i] < l2[j]) {
 					resultado[k] = l1[i];
@@ -1092,18 +1124,14 @@ public class Ejercicios {
 					j++;
 				}
 				k++;
-
 			} catch (ArrayIndexOutOfBoundsException excepcion) {
-
 				if (i == l1.length) // fin de l1..
 					l1[--i] = Integer.MAX_VALUE;
 				else
 					l2[--j] = Integer.MAX_VALUE;
 			}
-
 		}
 		return resultado;
-
 	}
 
 	// 3. Dada una cadena , obtener la cadena INVIRTIENDO sus caracteres (char)
@@ -1522,6 +1550,20 @@ public class Ejercicios {
 
 	public static void main(String[] args) {
 		Ejercicios ejercicios = new Ejercicios();
+		
+		BaseDatos bd = new BaseDatos("jdbc:mysql://" + "localhost:3306/", "losalmacenes", "root", "");
+		//Para comprobar si el driver entra correctamente
+		
+		// System.out.println(bd.getConexion());
+		// System.out.println(bd.getSt());
+		
+		
+		
+		/*****************INICIO PRACTICA RECURSIVIDAD*********************/
+		//  File inputFolder = new File("C:\\Users");
+		//  traverse(inputFolder, "");
+		/******************************************************************/
+			
 		/***************INICIO PRACTICAS EVALUACION************************/
 		// ArrayList<Equipo> listadoEquipos = ejercicios.crearListaEquipo("ficheros/equipos.txt");
 		// System.out.println(listadoEquipos);
