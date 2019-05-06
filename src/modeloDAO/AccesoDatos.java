@@ -218,8 +218,8 @@ public class AccesoDatos {
 		}
 	}
 	
-	public ArrayList<ArrayList<Equipo>> crearListadoEquipos(String bddatos, String tabla){
-		ArrayList<ArrayList<Equipo>> listadoEquipos = new ArrayList<ArrayList<Equipo>>();
+	public ArrayList<Equipo> crearListadoEquipos(String bddatos, String tabla){
+		ArrayList<Equipo> listadoEquipos = new ArrayList<Equipo>();
 		try {
 			BaseDatos bd = new BaseDatos("localhost:3306",  bddatos, "root", "");
 			Connection conexion = bd.getConexion();
@@ -227,8 +227,7 @@ public class AccesoDatos {
 			ResultSet rst = stmt.executeQuery("select * from " + tabla + " where 1;");
 			ResultSetMetaData rstMeta = rst.getMetaData(); // 
 			rstMeta.getColumnCount(); 
-			while(rst.next()) { // devuelve una linea de la consulta, es decir, una fila de la tabla
-				ArrayList<Equipo> unEquipo = new ArrayList<Equipo>();			
+			while(rst.next()) { // devuelve una linea de la consulta, es decir, una fila de la tabla		
 				int id = Integer.parseInt(rst.getString(1));
 				String nombreCorto = rst.getString(2);
 				String nombre = rst.getString(3);
@@ -240,14 +239,14 @@ public class AccesoDatos {
 				int gf = Integer.parseInt(rst.getString(9));
 				int gc = Integer.parseInt(rst.getString(10));
 				Equipo equipo = new Equipo(id, nombreCorto, nombre, pj, puntos, pg, pe, pp, gf, gc);
-				unEquipo.add(equipo);
-				listadoEquipos.add(unEquipo);			
+				listadoEquipos.add(equipo);			
 			}
 			for(int i = 0; i < listadoEquipos.size(); i++) {
-				ArrayList<Equipo> unEquipo = listadoEquipos.get(i);
-				for (int j = 0; j < unEquipo.size(); j++) {
-					System.out.println(unEquipo.get(j));
-				}
+				 Equipo unEquipo = listadoEquipos.get(i);			
+					System.out.println(unEquipo.getId() + " --> " + unEquipo.getNombreCorto() + " --> " + 
+				 unEquipo.getNombre() + " --> " + unEquipo.getPj() + " --> " + unEquipo.getPuntos() + " --> " + 
+							unEquipo.getPg() + " --> " + unEquipo.getPe() + " --> " + unEquipo.getPp() + " --> " + 
+				 unEquipo.getGf() + " --> " + unEquipo.getGc());					
 			}
 		
 			rst.close();
@@ -260,6 +259,48 @@ public class AccesoDatos {
 		}
 		return listadoEquipos;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

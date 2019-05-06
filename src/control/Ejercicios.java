@@ -1567,7 +1567,7 @@ public class Ejercicios {
 		
 		//aDatos.pruebaInsertaPartidosDesdeFichero("ficheros/partidos.txt");
 		
-		ArrayList<ArrayList<Equipo>> listadoEquipos = aDatos.crearListadoEquipos("liga", "Equipos");
+		ArrayList<Equipo> listadoEquipos = aDatos.crearListadoEquipos("liga", "Equipos");
 		/*****************INICIO PRACTICA RECURSIVIDAD*********************/
 		//  File inputFolder = new File("C:\\Users");
 		//  traverse(inputFolder, "");
