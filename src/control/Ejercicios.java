@@ -31,11 +31,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 import modelo.Equipo;
 import modelo.Estudiante;
 import modelo.Jugador;
 import modelo.Partido;
 import modelo.Persona;
+import modeloDAO.AccesoDatos;
 
 public class Ejercicios {
 	// 21 marzo 2019	
@@ -1551,14 +1554,20 @@ public class Ejercicios {
 	public static void main(String[] args) {
 		Ejercicios ejercicios = new Ejercicios();
 		
-		BaseDatos bd = new BaseDatos("jdbc:mysql://" + "localhost:3306/", "losalmacenes", "root", "");
-		//Para comprobar si el driver entra correctamente
-		
+		// BaseDatos bd = new BaseDatos("localhost:3306", "sakila2", "root", "");
+		// Para comprobar si el driver entra correctamente		
 		// System.out.println(bd.getConexion());
 		// System.out.println(bd.getSt());
 		
+		AccesoDatos aDatos = new AccesoDatos();
+		// aDatos.recorreTabla("liga", "jugadores");
+		// aDatos.insertaEquiposDesdeFichero("ficheros/equipos.txt");
+		// aDatos.insertaJugadoresDesdeFichero("ficheros/jugadores.txt"); // no termino de cargar dio ese ¿error? (conn=6) Out of range value for column 'longitudPaso' at row 1
+		// aDatos.insertaPartidosDesdeFichero("ficheros/partidos.txt"); // mismo error que antes -> (conn=7) Out of range value for column 'id' at row 1
 		
+		//aDatos.pruebaInsertaPartidosDesdeFichero("ficheros/partidos.txt");
 		
+		ArrayList<ArrayList<Equipo>> listadoEquipos = aDatos.crearListadoEquipos("liga", "Equipos");
 		/*****************INICIO PRACTICA RECURSIVIDAD*********************/
 		//  File inputFolder = new File("C:\\Users");
 		//  traverse(inputFolder, "");

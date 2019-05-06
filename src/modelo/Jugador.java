@@ -7,7 +7,7 @@ public class Jugador extends Persona {
 
 	public Jugador() {
 		}
-
+	
 	public Jugador(int id, String nif, String nombre, int longitudPaso, String fecha_nac, char sexo,  int dorsal,
 			int idEq) {
 		super(nif, nombre, longitudPaso, fecha_nac, sexo);

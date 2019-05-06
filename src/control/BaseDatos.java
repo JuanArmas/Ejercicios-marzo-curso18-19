@@ -3,8 +3,13 @@ package control;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Statement;			// 
+import java.sql.PreparedStatement;  // preparada para dar mayor seguridad y proteger acceso sobretodo en web
+import java.sql.ResultSet; 			// primer objeto al que podremos acceder a los datos
+import java.sql.ResultSetMetaData;  // obtener informacion de esa consulta, nombre de los campos, etc.
 
+
+// JDBC -> Java DataBase Connection
 public class BaseDatos {
 	// build path - library - indicar la ruta del archivo de la libreria
 	// desde dentro del proyecto se usara jdbc -> java.sql
@@ -20,32 +25,32 @@ public class BaseDatos {
 	private Connection conexion;
 	private Statement st = null;
 
-	public BaseDatos(String host, String dbname, String dbuser, String dbpassword) {
+	public BaseDatos(String host, String dbName, String dbUser, String dbpassword) {
 		super();
 		this.host = host;
-		this.dbname = dbname;
-		this.dbuser = dbuser;
+		this.dbname = dbName;
+		this.dbuser = dbUser;
 		this.dbpassword = dbpassword;
+		try {
+			
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		//	this.conexion = DriverManager.getConnection("jdbc:mysql://localhost/sakila2?&"+ "user=root&password=");
+			
+			this.conexion = DriverManager.getConnection("jdbc:mysql://" + host + "/" +
+					dbName + "?&user=" + dbUser +"&password="+ dbpassword); // +"&serverTimezone=UTC" //despues del dbpassword si hiciera falta por error de localizacion
 		
-		try {      // Cadena de conexión al driver de la base de datos
-        	Class.forName("com.mysql.cj.jdbc.Driver");           	
-
-         // Base de datos? &K1=V1 & K2=V2 & K3 = V3   	 
-         this.conexion = DriverManager.getConnection(host + dbname,  dbuser, dbpassword);  
-					// localhost puede ser la direccion IP		
-			System.out.println("Driver encontrado");
-			if(conexion != null){
-				st = conexion.createStatement ();
-				System.out.println(" Conexion a base de datos " +"'" + dbname +"'"+ " correcta .");
-			} else
-			System.out.println(" Conexion fallida .");
-		} catch (SQLException e){
-			System.out.println(e.getMessage()); //muestra el error que se esta capturando
-		} catch (ClassNotFoundException e){
-			System.out.println("Clase no encontrada");
-		}   	
+			
+			System.out.println("Conectado ...");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			
+		}
 	}
-
+	
+	//acceso a bbdd, en realidad no iria aqui, seria crear un paquete para ello
+	
+	
 	public BaseDatos() {
 		super();
 	}

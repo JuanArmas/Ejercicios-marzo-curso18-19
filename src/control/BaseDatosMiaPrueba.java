@@ -124,4 +124,8 @@ package control;
 	public BaseDatos() {
 		super();
 	}
+	
+	
+	//en el main
+	 BaseDatos bd = new BaseDatos("jdbc:mysql://" + "localhost:3306/", "losalmacenes", "root", "");
 	*/

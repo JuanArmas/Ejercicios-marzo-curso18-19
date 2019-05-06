@@ -7,9 +7,7 @@ public class MainPruebaConectionBBDD {
 		
 		System.out.println(bd.getConexion());
 		System.out.println(bd.getSt());
-		
-		
-		
+	
 		
 		System.out.println("Fin del programa");
 		System.exit(0);

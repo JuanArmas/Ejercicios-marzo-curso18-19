@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Equipo implements Serializable,Comparable<Equipo> {
 	
 	private static final long serialVersionUID = 1L;
-	private int id;
+	private int id; //PK
 	private String nombreCorto;
 	private String nombre;
 	private int pj;
