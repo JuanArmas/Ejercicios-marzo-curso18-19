@@ -39,6 +39,7 @@ import modelo.Jugador;
 import modelo.Partido;
 import modelo.Persona;
 import modeloDAO.AccesoDatos;
+import modeloDAO.IntroducirDatosTabla;
 
 public class Ejercicios {
 	// 21 marzo 2019	
@@ -1560,14 +1561,16 @@ public class Ejercicios {
 		// System.out.println(bd.getSt());
 		
 		AccesoDatos aDatos = new AccesoDatos();
-		// aDatos.recorreTabla("liga", "jugadores");
-		// aDatos.insertaEquiposDesdeFichero("ficheros/equipos.txt");
+		// aDatos.recorreTabla("liga", "equipos"); // ESTE METODO ES FUNDAMENTAL!!
+		// aDatos.insertaEquiposDesdeFichero("ficheros/equipos.txt"); // ESTE METODO TAMBIEN ES FUNDAMENTAL!!
 		// aDatos.insertaJugadoresDesdeFichero("ficheros/jugadores.txt"); // no termino de cargar dio ese ¿error? (conn=6) Out of range value for column 'longitudPaso' at row 1
 		// aDatos.insertaPartidosDesdeFichero("ficheros/partidos.txt"); // mismo error que antes -> (conn=7) Out of range value for column 'id' at row 1
 		
-		//aDatos.pruebaInsertaPartidosDesdeFichero("ficheros/partidos.txt");
+		// ArrayList<Equipo> listadoEquipos = aDatos.crearListadoEquiposDesdeBBDD("liga", "Equipos");
+		/*-----------------------------------------------------------------------------------------------*/
+		IntroducirDatosTabla iDatos = new IntroducirDatosTabla();
+		iDatos.validaLogin("usr2", "rincon2");
 		
-		ArrayList<Equipo> listadoEquipos = aDatos.crearListadoEquipos("liga", "Equipos");
 		/*****************INICIO PRACTICA RECURSIVIDAD*********************/
 		//  File inputFolder = new File("C:\\Users");
 		//  traverse(inputFolder, "");

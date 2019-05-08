@@ -41,44 +41,7 @@ public class AccesoDatos {
 	// hacer lo mismo para jugadores y partidos
 	// crear las dos tablas y cargarlas
 	// recuperar en una lista los jugadores, partidos y equipos
-	
-	public void pruebaInsertaPartidosDesdeFichero(String rutaPartidos) {
-		try {
-			BufferedReader fichero;
-			fichero = new BufferedReader(new FileReader(rutaPartidos));
-			BaseDatos bd = new BaseDatos("localhost:3306", "liga", "root", "");
-			Connection conexion = bd.getConexion();
-			Statement stmt = conexion.createStatement();
-			
-			String registro;
-			while ((registro = fichero.readLine()) != null) {
-				String[] campos = registro.split("#");
-				int id = Integer.parseInt(campos[0]);
-				int jornada = Integer.parseInt(campos[1]);
-				String eL = campos[2];
-				int gL = Integer.parseInt(campos[3]);
-				String eV = campos[4];
-				int gV = Integer.parseInt(campos[5]);
-				
-				String sql = "insert into partidos(id,jornada,eL,gL,eV,GV) values";
-				sql+= "(" + id + "," + jornada + ",\"" + eL + "\"," + gL + ",\"" + eV + "\"," + gV + ")";
-				System.out.println(sql);	
-				stmt.executeUpdate(sql);				
-			}	
-			stmt.close();
-			conexion.close();
-			fichero.close();
-			System.out.println("Fin de la lectura del fichero");
-		} catch (FileNotFoundException excepcion) {
-			System.out.println("fichero no encontrado");
-		} catch (IOException e) {
-			System.out.println("IO Excepcion");
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}catch (NumberFormatException e) {
-			
-		}
-	}
+	// CREAR OTRA CLASE DE INSERTAR DATOS Y LLEVARME LOS METODOS DE AQUI AL OTRO
 	
 	public void insertaPartidosDesdeFichero(String rutaPartidos) {
 		try {
@@ -218,7 +181,7 @@ public class AccesoDatos {
 		}
 	}
 	
-	public ArrayList<Equipo> crearListadoEquipos(String bddatos, String tabla){
+	public ArrayList<Equipo> crearListadoEquiposDesdeBBDD(String bddatos, String tabla){
 		ArrayList<Equipo> listadoEquipos = new ArrayList<Equipo>();
 		try {
 			BaseDatos bd = new BaseDatos("localhost:3306",  bddatos, "root", "");
@@ -247,8 +210,7 @@ public class AccesoDatos {
 				 unEquipo.getNombre() + " --> " + unEquipo.getPj() + " --> " + unEquipo.getPuntos() + " --> " + 
 							unEquipo.getPg() + " --> " + unEquipo.getPe() + " --> " + unEquipo.getPp() + " --> " + 
 				 unEquipo.getGf() + " --> " + unEquipo.getGc());					
-			}
-		
+			}	
 			rst.close();
 			stmt.close();
 			conexion.close();
@@ -259,7 +221,7 @@ public class AccesoDatos {
 		}
 		return listadoEquipos;
 	}
-	
+	// CREAR OTRA CLASE DE INSERTAR DATOS Y LLEVARME LOS METODOS DE AQUI AL OTRO
 	
 	
 	
